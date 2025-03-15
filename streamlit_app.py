@@ -45,7 +45,4 @@ if user_input:
     
     # Add the bot's response to the chat history
     st.session_state['messages'].append({"role": "bot", "content": (bot_response, confidence)})
-    
-    # Clear the input field after submission
-    st.experimental_rerun()
 
