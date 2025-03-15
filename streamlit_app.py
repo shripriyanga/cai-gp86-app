@@ -1,30 +1,10 @@
 import streamlit as st
 
-# Define the LLM query function
-def ask_local_llm(query, retrieved_chunks):
-    context = "\n\n".join([chunk["text"] for chunk in retrieved_chunks])
-    prompt = f"""
-    You are a financial AI answering based on Cognizant's 2023 and 2024 report.
-    Stick to the retrieved context. If unsure, say "I don't know."
-
-    Context:
-    {context}
-
-    Question: {query}
-    """  
-
-    response = "You are a financial AI answering based on Cognizant's 2023 and 2024 report. Stick to the retrieved context. If unsure, say 'I don't know.'"  
-    return response
-
-# Placeholder retrieved chunks (to be replaced with actual retrieval logic)
-retrieved_chunks = [{"text": "Cognizant's revenue grew by 5% in 2023."},
-                    {"text": "The company's AI investments increased significantly in 2024."}]
-
 # Set the page title
-st.set_page_config(page_title="Financial RAG Chatbot Cognizant")
+st.set_page_config(page_title="Interactive Messenger Chatbot")
 
 # Add a title to the app
-st.title("Financial RAG Chatbot Cognizant")
+st.title("Interactive Messenger Chatbot")
 
 # Initialize session state for messages
 if "messages" not in st.session_state:
@@ -44,7 +24,7 @@ if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
 
     # Hardcoded bot response
-    bot_response = "Random"
+    bot_response = "This is a hardcoded response from the bot."
 
     # Add the bot's response to the chat history
     st.session_state.messages.append({"role": "bot", "content": bot_response})
