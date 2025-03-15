@@ -17,11 +17,14 @@ for message in st.session_state['messages']:
     else:
         st.chat_message(message['role'], avatar_style="big-smile").markdown(f"**Bot's Response:** {message['content']}")
 
-# Get user input for the chatbot
-user_input = st.text_input("Type your message:")
+# Create a text input for the user message
+user_input = st.text_area("Type your message:", height=100)
+
+# Add a submit button
+submit_button = st.button("Submit")
 
 # If the user submits a message, store it and get a hardcoded response
-if user_input:
+if submit_button and user_input:
     # Add the user's message to the chat history
     st.session_state['messages'].append({"role": "user", "content": user_input})
     
@@ -30,3 +33,4 @@ if user_input:
     
     # Add the bot's response to the chat history
     st.session_state['messages'].append({"role": "bot", "content": bot_response})
+
