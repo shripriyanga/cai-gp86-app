@@ -10,9 +10,6 @@ st.title("Interactive Messenger Chatbot")
 if 'messages' not in st.session_state:
     st.session_state['messages'] = []
 
-if 'input_message' not in st.session_state:
-    st.session_state['input_message'] = ""
-
 # Display the chat history
 for message in st.session_state['messages']:
     if message['role'] == 'user':
@@ -21,24 +18,25 @@ for message in st.session_state['messages']:
         st.chat_message(message['role']).markdown(f"**Bot's Response:** {message['content']}")
 
 # Create a text input for the user message
-user_input = st.text_area("Type your message:", height=100, value=st.session_state['input_message'])
+user_input = st.text_area("Type your message:", height=100, key="input_message")
 
 # Add a submit button
 submit_button = st.button("Submit")
 
 # If the user submits a message, store it and get a hardcoded response
-if submit_button and user_input:
-    # Add the user's message to the chat history
-    st.session_state['messages'].append({"role": "user", "content": user_input})
-    
-    # Hardcoded bot response
-    bot_response = "This is a hardcoded response from the bot."
-    
-    # Add the bot's response to the chat history
-    st.session_state['messages'].append({"role": "bot", "content": bot_response})
-    
-    # Clear the input after submission
-    st.session_state['input_message'] = ""  # Reset input_message session state
+if submit_button:
+    if user_input:
+        # Add the user's message to the chat history
+        st.session_state['messages'].append({"role": "user", "content": user_input})
+        
+        # Hardcoded bot response
+        bot_response = "This is a hardcoded response from the bot."
+        
+        # Add the bot's response to the chat history
+        st.session_state['messages'].append({"role": "bot", "content": bot_response})
 
-    # Ensure that input field is cleared by updating its value in session state
-    st.session_state['input_message'] = ""  # Reset the input message value in session state
+        # Clear the input after submission by updating the session state
+        st.session_state['input_message'] = ""  # Reset the input field for next message
+
+        # Immediately refresh the page with the updated messages
+        st.experimental_rerun()
