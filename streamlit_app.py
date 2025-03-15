@@ -44,7 +44,7 @@ if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
 
     # Hardcoded bot response
-    bot_response = ask_local_llm(user_input, retrieved_chunks)
+    bot_response = "Random"
 
     # Add the bot's response to the chat history
     st.session_state.messages.append({"role": "bot", "content": bot_response})
