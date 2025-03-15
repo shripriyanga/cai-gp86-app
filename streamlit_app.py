@@ -13,9 +13,9 @@ if 'messages' not in st.session_state:
 # Display the chat history
 for message in st.session_state['messages']:
     if message['role'] == 'user':
-        st.chat_message(message['role'], avatar_style="big-smile").markdown(f"**{message['content']}**")
+        st.chat_message(message['role']).markdown(f"**{message['content']}**")
     else:
-        st.chat_message(message['role'], avatar_style="big-smile").markdown(f"**Bot's Response:** {message['content']}")
+        st.chat_message(message['role']).markdown(f"**Bot's Response:** {message['content']}")
 
 # Create a text input for the user message
 user_input = st.text_area("Type your message:", height=100)
@@ -33,4 +33,3 @@ if submit_button and user_input:
     
     # Add the bot's response to the chat history
     st.session_state['messages'].append({"role": "bot", "content": bot_response})
-
