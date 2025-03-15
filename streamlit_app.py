@@ -1,5 +1,6 @@
 import streamlit as st
-
+import torch
+import transformers
 from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
 
 # Load the model and tokenizer
