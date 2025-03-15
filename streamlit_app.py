@@ -1,17 +1,4 @@
 import streamlit as st
-import torch
-import transformers
-from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
-
-# Load the model and tokenizer
-@st.cache_resource()
-def load_model():
-    model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name)
-    return pipeline("text-generation", model=model, tokenizer=tokenizer)
-
-generator = load_model()
 
 # Define the LLM query function
 def ask_local_llm(query, retrieved_chunks):
@@ -24,9 +11,10 @@ def ask_local_llm(query, retrieved_chunks):
     {context}
 
     Question: {query}
-    """
-    response = generator(prompt, max_new_tokens=200)
-    return response[0]["generated_text"]
+    """"
+    response = "You are a financial AI answering based on Cognizant's 2023 and 2024 report.
+    Stick to the retrieved context. If unsure, say I don't know."
+    return response
 
 # Placeholder retrieved chunks (to be replaced with actual retrieval logic)
 retrieved_chunks = [{"text": "Cognizant's revenue grew by 5% in 2023."},
