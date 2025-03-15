@@ -10,6 +10,10 @@ st.title("Interactive Messenger Chatbot")
 if 'messages' not in st.session_state:
     st.session_state['messages'] = []
 
+# Initialize session state for input message if it doesn't exist
+if 'input_message' not in st.session_state:
+    st.session_state['input_message'] = ""
+
 # Display the chat history
 for message in st.session_state['messages']:
     if message['role'] == 'user':
@@ -18,7 +22,7 @@ for message in st.session_state['messages']:
         st.chat_message(message['role']).markdown(f"**Bot's Response:** {message['content']}")
 
 # Create a text input for the user message
-user_input = st.text_area("Type your message:", height=100, key="input_message")
+user_input = st.text_area("Type your message:", height=100, value=st.session_state['input_message'])
 
 # Add a submit button
 submit_button = st.button("Submit")
@@ -35,4 +39,4 @@ if submit_button and user_input:
     st.session_state['messages'].append({"role": "bot", "content": bot_response})
     
     # Clear the input after submission
-    st.session_state.input_message = ""
+    st.session_state['input_message'] = ""
