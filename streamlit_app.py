@@ -8,7 +8,7 @@ def get_answer_and_confidence(query):
     :return: A tuple of (answer, confidence_score).
     """
     # Simulate answer retrieval and confidence scoring
-    answer = f"This is a simulated answer to: '{query}'"
+    answer = f"This is a simulated answer to check: '{query}'"
     confidence_score = round(uniform(0.7, 1.0), 2)  # Simulated confidence score
     return answer, confidence_score
 
