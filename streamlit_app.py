@@ -6,11 +6,10 @@ st.set_page_config(page_title="Interactive Messenger Chatbot")
 # Add a title to the app
 st.title("Interactive Messenger Chatbot")
 
-# Initialize session state for messages
+# Initialize session state for messages and input message
 if 'messages' not in st.session_state:
     st.session_state['messages'] = []
 
-# Initialize session state for input message if it doesn't exist
 if 'input_message' not in st.session_state:
     st.session_state['input_message'] = ""
 
@@ -39,4 +38,8 @@ if submit_button and user_input:
     st.session_state['messages'].append({"role": "bot", "content": bot_response})
     
     # Clear the input after submission
-    st.session_state['input_message'] = ""
+    st.session_state['input_message'] = ""  # Reset input_message session state
+
+    # Prevent the previously entered message from persisting
+    st.text_area("Type your message:", height=100, value="")  # Clear the input field immediately
+
