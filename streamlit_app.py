@@ -40,6 +40,5 @@ if submit_button and user_input:
     # Clear the input after submission
     st.session_state['input_message'] = ""  # Reset input_message session state
 
-    # Prevent the previously entered message from persisting
-    st.text_area("Type your message:", height=100, value="")  # Clear the input field immediately
-
+    # Ensure that input field is cleared by updating its value in session state
+    st.session_state['input_message'] = ""  # Reset the input message value in session state
