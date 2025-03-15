@@ -6,37 +6,28 @@ st.set_page_config(page_title="Interactive Messenger Chatbot")
 # Add a title to the app
 st.title("Interactive Messenger Chatbot")
 
-# Initialize session state for messages and input message
-if 'messages' not in st.session_state:
-    st.session_state['messages'] = []
+# Initialize session state for messages
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
 # Display the chat history
-for message in st.session_state['messages']:
-    if message['role'] == 'user':
-        st.chat_message(message['role']).markdown(f"**{message['content']}**")
-    else:
-        st.chat_message(message['role']).markdown(f"**Bot's Response:** {message['content']}")
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
 # Create a text input for the user message
-user_input = st.text_area("Type your message:", height=100, key="input_message")
+user_input = st.chat_input("Type your message...")
 
-# Add a submit button
-submit_button = st.button("Submit")
+# If user sends a message
+if user_input:
+    # Add the user's message to the chat history
+    st.session_state.messages.append({"role": "user", "content": user_input})
 
-# If the user submits a message, store it and get a hardcoded response
-if submit_button:
-    if user_input:
-        # Add the user's message to the chat history
-        st.session_state['messages'].append({"role": "user", "content": user_input})
-        
-        # Hardcoded bot response
-        bot_response = "This is a hardcoded response from the bot."
-        
-        # Add the bot's response to the chat history
-        st.session_state['messages'].append({"role": "bot", "content": bot_response})
+    # Hardcoded bot response
+    bot_response = "This is a hardcoded response from the bot."
 
-        # Clear the input after submission by updating the session state
-        st.session_state['input_message'] = ""  # Reset the input field for next message
+    # Add the bot's response to the chat history
+    st.session_state.messages.append({"role": "bot", "content": bot_response})
 
-        # Immediately refresh the page with the updated messages
-        st.experimental_rerun()
+    # Rerun the script to reflect the updated messages
+    st.rerun()
