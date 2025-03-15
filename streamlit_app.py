@@ -15,39 +15,54 @@ def get_answer_and_confidence(query):
 # Streamlit UI setup
 st.title("Interactive Chatbot Interface")
 
-st.sidebar.header("Chat Options")
-st.sidebar.write("Type your question in the chat below and click 'Send' to get a response.")
+# Entry and exit mechanism
+if "chat_active" not in st.session_state:
+    st.session_state.chat_active = False
 
-# Chat history
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
+if not st.session_state.chat_active:
+    if st.button("Start Chat"):
+        st.session_state.chat_active = True
+        st.session_state.chat_history = []  # Initialize chat history
+else:
+    if st.button("End Chat"):
+        st.session_state.chat_active = False
+        st.success("Chat session ended. Thank you for chatting!")
 
-# Input field for user query
-user_query = st.text_input("Ask the chatbot:", placeholder="Type your question here...")
+# Chat logic
+if st.session_state.chat_active:
+    st.sidebar.header("Chat Options")
+    st.sidebar.write("Type your question in the chat below and click 'Send' to get a response.")
 
-if st.button("Send"):
-    if user_query.strip():
-        # Fetch answer and confidence score
-        answer, confidence = get_answer_and_confidence(user_query)
-        
-        # Save chat history
-        st.session_state.chat_history.append({
-            "query": user_query,
-            "answer": answer,
-            "confidence": confidence
-        })
-    else:
-        st.warning("Please enter a valid query before sending.")
+    # Chat history
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
 
-# Display chat history
-st.subheader("Chat History")
-for i, chat in enumerate(st.session_state.chat_history):
-    st.write(f"**You:** {chat['query']}")
-    st.write(f"**Bot:** {chat['answer']}")
-    st.progress(chat['confidence'])
-    st.write(f"Confidence: {chat['confidence'] * 100:.0f}%")
-    if i < len(st.session_state.chat_history) - 1:
-        st.markdown("---")
+    # Input field for user query
+    user_query = st.text_input("Your turn:", placeholder="Type your question here...")
+
+    if st.button("Send"):
+        if user_query.strip():
+            # Fetch answer and confidence score
+            answer, confidence = get_answer_and_confidence(user_query)
+
+            # Save chat history
+            st.session_state.chat_history.append({
+                "query": user_query,
+                "answer": answer,
+                "confidence": confidence
+            })
+        else:
+            st.warning("Please enter a valid query before sending.")
+
+    # Display chat history
+    st.subheader("Chat History")
+    for i, chat in enumerate(st.session_state.chat_history):
+        st.write(f"**You:** {chat['query']}")
+        st.write(f"**Bot:** {chat['answer']}")
+        st.progress(chat['confidence'])
+        st.write(f"Confidence: {chat['confidence'] * 100:.0f}%")
+        if i < len(st.session_state.chat_history) - 1:
+            st.markdown("---")
 
 # Ensure responsiveness with a clean layout
 st.markdown("---")
