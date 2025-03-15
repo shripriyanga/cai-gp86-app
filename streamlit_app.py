@@ -13,57 +13,44 @@ def get_answer_and_confidence(query):
     return answer, confidence_score
 
 # Streamlit UI setup
-st.title("Interactive Chatbot")
+st.set_page_config(page_title="Chatbot", page_icon="💬", layout="centered")
 
-# Entry and exit mechanism
-if "chat_active" not in st.session_state:
-    st.session_state.chat_active = False
+# Chat title and introduction
+st.markdown("<h1 style='text-align: center; color: #333;'>💬 Chatbot Interface</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #666;'>How may I help you?</p>", unsafe_allow_html=True)
 
-if not st.session_state.chat_active:
-    if st.button("Start Chat"):
-        st.session_state.chat_active = True
-        st.session_state.chat_history = []  # Initialize chat history
-else:
-    if st.button("End Chat"):
-        st.session_state.chat_active = False
-        st.success("Chat session ended. Thank you for chatting!")
+# Initialize session state for chat
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
 
-# Chat logic
-if st.session_state.chat_active:
-    st.sidebar.header("Chat Options")
-    st.sidebar.write("Type your query below and get a response from the system.")
+# Chat input area
+with st.form(key="chat_form"):
+    user_query = st.text_input("Your message", placeholder="Type your query here...", label_visibility="collapsed")
+    submit_button = st.form_submit_button(label="Send")
 
-    # Chat history
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
+# Handle query submission
+if submit_button and user_query.strip():
+    # Fetch answer and confidence score
+    answer, confidence = get_answer_and_confidence(user_query)
 
-    # Input field for user query
-    user_query = st.text_input("Your query:", placeholder="Type your query here...")
+    # Save chat history
+    st.session_state.chat_history.append({
+        "query": user_query,
+        "answer": answer,
+        "confidence": confidence
+    })
 
-    if st.button("Send"):
-        if user_query.strip():
-            # Fetch answer and confidence score
-            answer, confidence = get_answer_and_confidence(user_query)
+# Display chat history
+if st.session_state.chat_history:
+    st.markdown("---")
+    for chat in st.session_state.chat_history:
+        st.markdown(f"<div style='background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 10px;'>"
+                    f"<b>You:</b> {chat['query']}<br>"
+                    f"<b>Bot:</b> {chat['answer']}<br>"
+                    f"<small style='color: #666;'>Confidence: {chat['confidence'] * 100:.0f}%</small>"
+                    f"</div>", unsafe_allow_html=True)
 
-            # Save chat history
-            st.session_state.chat_history.append({
-                "query": user_query,
-                "response": answer,
-                "confidence": confidence
-            })
-        else:
-            st.warning("Please enter a valid query before sending.")
-
-    # Display chat history
-    st.subheader("Chat History")
-    for i, chat in enumerate(st.session_state.chat_history):
-        st.write(f"**You:** {chat['query']}")
-        st.write(f"**System:** {chat['response']}")
-        st.progress(chat['confidence'])
-        st.write(f"Confidence: {chat['confidence'] * 100:.0f}%")
-        if i < len(st.session_state.chat_history) - 1:
-            st.markdown("---")
-
-# Ensure responsiveness with a clean layout
-st.markdown("---")
-st.caption("Powered by Streamlit")
+# Exit option
+if st.button("End Chat"):
+    st.session_state.chat_history = []
+    st.success("Chat session ended. Thank you for chatting!")
