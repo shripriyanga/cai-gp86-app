@@ -1,56 +1,82 @@
 import streamlit as st
-from random import uniform
 
-def get_answer_and_confidence(query):
-    """
-    Simulate fetching an answer and confidence score for a given query.
-    :param query: User input query.
-    :return: A tuple of (answer, confidence_score).
-    """
-    # Simulate answer retrieval and confidence scoring
-    answer = f"This is a simulated answer to: '{query}'"
-    confidence_score = round(uniform(0.7, 1.0), 2)  # Simulated confidence score
-    return answer, confidence_score
+# Streamlit Page Configuration
+st.set_page_config(page_title="Chat Bot via Streamlit", page_icon=":speech_balloon:", layout="centered")
 
-# Streamlit UI setup
-st.set_page_config(page_title="Chatbot", page_icon="💬", layout="centered")
+# Custom CSS for styling
+def set_custom_css():
+    st.markdown(
+        """
+        <style>
+        .chat-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .chat-header {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #6A1B9A;
+        }
+        .chat-bubble {
+            border-radius: 20px;
+            padding: 15px;
+            margin: 10px 0;
+            max-width: 80%;
+        }
+        .ai-bubble {
+            background-color: #F1F1F1;
+            color: #000;
+            align-self: flex-start;
+        }
+        .user-bubble {
+            background-color: #6A1B9A;
+            color: #FFF;
+            align-self: flex-end;
+        }
+        .thankyou-message {
+            margin-top: 20px;
+            font-style: italic;
+            text-align: center;
+            color: #555;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
-# Chat title and introduction
-st.markdown("<h1 style='text-align: center; color: #333;'>💬 Chatbot Interface</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #666;'>How may I help you?</p>", unsafe_allow_html=True)
+set_custom_css()
 
-# Initialize session state for chat
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
+# Chat Header
+st.markdown('<div class="chat-header">Chat Bot via Streamlit</div>', unsafe_allow_html=True)
 
-# Chat input area
-with st.form(key="chat_form"):
-    user_query = st.text_input("Your message", placeholder="Type your query here...", label_visibility="collapsed")
-    submit_button = st.form_submit_button(label="Send")
+# Chat Container
+st.markdown('<div class="chat-container">', unsafe_allow_html=True)
 
-# Handle query submission
-if submit_button and user_query.strip():
-    # Fetch answer and confidence score
-    answer, confidence = get_answer_and_confidence(user_query)
+# Chat Messages
+user_input_1 = "Hey"
+ai_response_1 = "Hey there! How may I help you today?"
+user_input_2 = "Suggest one good quote - just one"
+ai_response_2 = (
+    "\"The future belongs to those who believe in the beauty of their dreams.\" - Eleanor Roosevelt\n\n"
+    "This quote is a reminder that anything is possible if you believe in yourself and your dreams. It is a powerful message that can inspire people to achieve great things."
+)
+user_input_3 = "Thank my readers"
+ai_response_3 = (
+    "Thank you for reading my work! I appreciate your support and feedback. I hope you enjoyed reading my work as much as I enjoyed writing it."
+)
 
-    # Save chat history
-    st.session_state.chat_history.append({
-        "query": user_query,
-        "answer": answer,
-        "confidence": confidence
-    })
+# Display Messages in Chat Layout
+st.markdown(f'<div class="chat-bubble ai-bubble">{ai_response_1}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="chat-bubble user-bubble">{user_input_2}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="chat-bubble ai-bubble">{ai_response_2}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="chat-bubble user-bubble">{user_input_3}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="chat-bubble ai-bubble">{ai_response_3}</div>', unsafe_allow_html=True)
 
-# Display chat history
-if st.session_state.chat_history:
-    st.markdown("---")
-    for chat in st.session_state.chat_history:
-        st.markdown(f"<div style='background-color: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 10px;'>"
-                    f"<b>You:</b> {chat['query']}<br>"
-                    f"<b>Bot:</b> {chat['answer']}<br>"
-                    f"<small style='color: #666;'>Confidence: {chat['confidence'] * 100:.0f}%</small>"
-                    f"</div>", unsafe_allow_html=True)
+# Thank You Message
+st.markdown(
+    '<div class="thankyou-message">Thank you for interacting with this chatbot!</div>', unsafe_allow_html=True
+)
 
-# Exit option
-if st.button("End Chat"):
-    st.session_state.chat_history = []
-    st.success("Chat session ended. Thank you for chatting!")
+# Close Chat Container
+st.markdown('</div>', unsafe_allow_html=True)
