@@ -27,7 +27,7 @@ if user_input:
     bot_response = "This is a hardcoded response from the bot."
 
     # Add the bot's response to the chat history
-    st.session_state.messages.append({"role": "RAG", "content": bot_response})
+    st.session_state.messages.append({"role": "rag", "content": bot_response})
 
     # Rerun the script to reflect the updated messages
     st.rerun()
