@@ -13,7 +13,7 @@ def get_answer_and_confidence(query):
     return answer, confidence_score
 
 # Streamlit UI setup
-st.title("Interactive Chatbot with Turn-Based Interaction")
+st.title("Interactive Chatbot")
 
 # Entry and exit mechanism
 if "chat_active" not in st.session_state:
@@ -23,7 +23,6 @@ if not st.session_state.chat_active:
     if st.button("Start Chat"):
         st.session_state.chat_active = True
         st.session_state.chat_history = []  # Initialize chat history
-        st.session_state.current_turn = "User 1"
 else:
     if st.button("End Chat"):
         st.session_state.chat_active = False
@@ -32,51 +31,38 @@ else:
 # Chat logic
 if st.session_state.chat_active:
     st.sidebar.header("Chat Options")
-    st.sidebar.write("Type your question in the chat below and take turns.")
+    st.sidebar.write("Type your query below and get a response from the system.")
+
+    # Chat history
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+
+    # Input field for user query
+    user_query = st.text_input("Your query:", placeholder="Type your query here...")
+
+    if st.button("Send"):
+        if user_query.strip():
+            # Fetch answer and confidence score
+            answer, confidence = get_answer_and_confidence(user_query)
+
+            # Save chat history
+            st.session_state.chat_history.append({
+                "query": user_query,
+                "response": answer,
+                "confidence": confidence
+            })
+        else:
+            st.warning("Please enter a valid query before sending.")
 
     # Display chat history
     st.subheader("Chat History")
     for i, chat in enumerate(st.session_state.chat_history):
-        st.write(f"**{chat['user']}:** {chat['query']}")
-        if chat['response']:
-            st.write(f"**Bot:** {chat['response']}")
-            st.progress(chat['confidence'])
-            st.write(f"Confidence: {chat['confidence'] * 100:.0f}%")
+        st.write(f"**You:** {chat['query']}")
+        st.write(f"**System:** {chat['response']}")
+        st.progress(chat['confidence'])
+        st.write(f"Confidence: {chat['confidence'] * 100:.0f}%")
         if i < len(st.session_state.chat_history) - 1:
             st.markdown("---")
-
-    # Input field for user query
-    user_query = st.text_input(f"{st.session_state.current_turn} (Your turn):", placeholder="Type your query here...")
-
-    if st.button("Send"):
-        if user_query.strip():
-            if st.session_state.current_turn == "User 1":
-                # Add User 1's query to the chat history
-                st.session_state.chat_history.append({
-                    "user": "User 1",
-                    "query": user_query,
-                    "response": None,
-                    "confidence": None
-                })
-                st.session_state.current_turn = "User 2"
-            else:
-                # Fetch answer and confidence score for User 2's query
-                answer, confidence = get_answer_and_confidence(user_query)
-                st.session_state.chat_history.append({
-                    "user": "User 2",
-                    "query": user_query,
-                    "response": answer,
-                    "confidence": confidence
-                })
-                st.session_state.current_turn = "User 1"
-        else:
-            st.warning("Please enter a valid query before sending.")
-
-    # Exit prompt
-    if st.button("Exit Chat"):
-        if st.radio("Do you want to exit?", ("Yes", "No")) == "Yes":
-            st.session_state.chat_active = False
-            st.success("Chat session ended. Have a great day!")
 
 # Ensure responsiveness with a clean layout
 st.markdown("---")
