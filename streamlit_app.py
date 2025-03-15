@@ -12,7 +12,7 @@ def ask_local_llm(query, retrieved_chunks):
 
     Question: {query}
     """
-    response = "You are a financial AI answering based on Cognizant's 2023 and 2024 report.
+    response = "You are a financial AI answering based on Cognizant's 2023 and 2024 report."
     Stick to the retrieved context. If unsure, say I don't know."
     return response
 
