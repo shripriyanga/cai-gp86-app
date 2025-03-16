@@ -1,7 +1,6 @@
-import pysqlite3
+import sqlite3
 import sys
-sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
-import chromadb
+sys.modules["pysqlite3"] = sqlite3
 
 import streamlit as st
 from RAG_implementation import prep,process_and_store,retrieve_similar_chunks,ask_local_llm,ask_local_llm_adv,retrieve_similar_chunks_Advanced_Rag,GuardRail
