@@ -31,6 +31,9 @@ for message in st.session_state.messages:
 user_input = st.chat_input("Type your message...")
 
 #retrieved_chunks = retrieve_similar_chunks(user_input)
+retrieved_chunks = [{"text": "Cognizant's revenue grew by 5% in 2023."},
+                    {"text": "The company's AI investments increased significantly in 2024."}]
+
 
 
 # If user sends a message
@@ -39,7 +42,7 @@ if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
 
     # Hardcoded bot response
-    bot_response = ask_local_llm(user_input, "abc")
+    bot_response = ask_local_llm(user_input, retrieved_chunks)
 
     # Add the bot's response to the chat history
     st.session_state.messages.append({"role": "bot", "content": bot_response})
