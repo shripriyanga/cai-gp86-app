@@ -13,6 +13,7 @@ from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
 from rank_bm25 import BM25Okapi
 from scipy.special import softmax
 from sentence_transformers import util
+import os
 
 
 # Function to extract text from PDF
