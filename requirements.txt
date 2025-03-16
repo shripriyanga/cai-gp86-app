@@ -13,4 +13,4 @@ pypdf
 pymupdf
 chromadb
 rank_bm25
-sqlite3
+pysqlite3-binary 
