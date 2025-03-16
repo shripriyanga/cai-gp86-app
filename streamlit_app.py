@@ -23,9 +23,9 @@ for message in st.session_state.messages:
 # Create a text input for the user message
 user_input = st.chat_input("Type your message...")
 
-retrieved_chunks = retrieve_similar_chunks(user_input)
-#retrieved_chunks = [{"text": "Cognizant's revenue grew by 5% in 2023."},
-#                    {"text": "The company's AI investments increased significantly in 2024."}]
+#retrieved_chunks = retrieve_similar_chunks(user_input)
+retrieved_chunks = [{"text": "Cognizant's revenue grew by 5% in 2023."},
+                    {"text": "The company's AI investments increased significantly in 2024."}]
 
 
 
