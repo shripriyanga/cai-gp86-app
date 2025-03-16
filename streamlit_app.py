@@ -1,4 +1,5 @@
 import streamlit as st
+from RAG_implementation import retrieve_similar_chunks, ask_local_llm
 
 def ask_local_llm(query, retrieved_chunks):
     context = "\n\n".join([chunk["text"] for chunk in retrieved_chunks])
@@ -25,11 +26,7 @@ for message in st.session_state.messages:
 # Create a text input for the user message
 user_input = st.chat_input("Type your message...")
 
-# Placeholder retrieved chunks (to be replaced with actual retrieval logic)
-retrieved_chunks = [{"text": "Cognizant's revenue grew by 5% in 2023."},
-                    {"text": "The company's AI investments increased significantly in 2024."}]
-
-
+retrieved_chunks = retrieve_similar_chunks(user_input)
 # If user sends a message
 if user_input:
     # Add the user's message to the chat history
