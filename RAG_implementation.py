@@ -114,6 +114,14 @@ doc_2024 = "2024_Financial_Report"
 process_and_store_financial_reports("2024-02-06-COGNIZANT-REPORTS-FOURTH-QUARTER-AND-FULL-YEAR-2023-RESULTS.pdf", doc_2023)
 process_and_store_financial_reports("2025-02-05-Cognizant-Reports-Fourth-Quarter-and-Full-Year-2024-Results.pdf", doc_2024)
 
+
+# Load embedding model
+embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+
+# Initialize ChromaDB client and collection
+chroma_client = chromadb.PersistentClient(path="./chroma_db")
+collection = chroma_client.get_or_create_collection("financial_data")
+
 # Log in to your Hugging Face account
 login(token='hf_KWGCDOKcYOUrYUUJZurryXKJrwxqqNgnNKv')
 
@@ -125,16 +133,22 @@ model = AutoModelForCausalLM.from_pretrained(model_name)
 # Create the pipeline
 generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
+# Example Query
+query_DB = "How much did Cognizant return to shareholders through share repurchases and dividends in 2023 and 2024?"
+
+retrieved_chunks_DB = retrieve_similar_chunks(query_DB)
+print(retrieved_chunks_DB)
+
+# Print retrieved results
+print("Top Retrieved Chunks:")
+for chunk in retrieved_chunks_DB:
+  print(chunk["text"])
+
 # Generate response using local LLM
 response = ask_local_llm(query_DB, retrieved_chunks_DB)
 print(response)
 
-# Load embedding model
-embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
-# Initialize ChromaDB client and collection
-chroma_client = chromadb.PersistentClient(path="./chroma_db")
-collection = chroma_client.get_or_create_collection("financial_data")
 
 
 
