@@ -3,7 +3,7 @@ import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 import streamlit as st
-#from RAG_implementation import retrieve_similar_chunks, ask_local_llm
+from RAG_implementation import retrieve_similar_chunks, ask_local_llm
 
 # Set the page title
 st.set_page_config(page_title="Financial RAG Chatbot Cognizant")
