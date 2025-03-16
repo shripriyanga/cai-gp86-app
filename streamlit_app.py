@@ -1,6 +1,6 @@
-__import__('pysqlite3')
+import sqlite3
 import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+sys.modules["pysqlite3"] = sqlite3
 
 import streamlit as st
 #from RAG_implementation import retrieve_similar_chunks, ask_local_llm
