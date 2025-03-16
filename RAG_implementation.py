@@ -121,8 +121,8 @@ chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_or_create_collection("financial_data")
 
 # Log in to your Hugging Face account
-login(token=os.getenv("HUGGING_FACE_TOKEN"))
-#login(token='hf_KWGCDOKcYOUrYUUJZurryXKJrwxqqNgnNKv')
+#login(token=os.getenv("HUGGING_FACE_TOKEN"))
+login(token='hf_KWGCDOKcYOUrYUUJZurryXKJrwxqqNgnNK')
 
 # Download and cache the model and tokenizer
 model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
