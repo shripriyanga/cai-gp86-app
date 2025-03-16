@@ -5,13 +5,6 @@ sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 import streamlit as st
 #from RAG_implementation import retrieve_similar_chunks, ask_local_llm
 
-def ask_local_llm(query, retrieved_chunks):
-    context = "\n\n".join([chunk["text"] for chunk in retrieved_chunks])
-
-    #response = "You are a financial AI answering based on Cognizant's 2023 and 2024 report. Stick to the retrieved context. If unsure, say 'I don't know.'"  
-    response = query
-    return response
-
 # Set the page title
 st.set_page_config(page_title="Financial RAG Chatbot Cognizant")
 
