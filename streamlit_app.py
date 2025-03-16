@@ -3,7 +3,7 @@ import sys
 sys.modules["pysqlite3"] = sqlite3
 
 import streamlit as st
-from RAG_implementation import prep,process_and_store,retrieve_similar_chunks,ask_local_llm
+from RAG_implementation import prep,process_and_store,retrieve_similar_chunks,ask_local_llm,ask_local_llm_adv,retrieve_similar_chunks_Advanced_Rag,GuardRail
 
 # Initialize only once
 if "initialized" not in st.session_state:
@@ -27,7 +27,10 @@ if "messages" not in st.session_state:
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-
+        # Display confidence score for bot responses
+        if message["role"] == "bot" and "confidence" in message:
+            with st.expander("Confidence Score"):
+                st.markdown(f"**Confidence:** {message['confidence']:.2f}")
 
 
 # Create a text input for the user message
@@ -43,13 +46,20 @@ user_input = st.chat_input("Type your message...")
 if user_input:
     # Add the user's message to the chat history
     st.session_state.messages.append({"role": "user", "content": user_input})
-    retrieved_chunks = retrieve_similar_chunks(user_input)
-    # Hardcoded bot response
-    #bot_response = "Harcoded checks"
-    bot_response = ask_local_llm(user_input, retrieved_chunks)
+    retrieved_chunks = GuardRail(user_input)
+
+    if "Your query seems to contain the term" in retrieved_chunks:
+        bot_response = retrieved_chunks
+        confidence_score = 0
+    #retrieved_chunks = retrieve_similar_chunks_Advanced_Rag(user_input)
+    else:
+        bot_response,confidence_score = ask_local_llm_adv(user_input, retrieved_chunks)
+
+    # if "I'm currently specialized in financial reports and related topics. Could you please ask a financial-related question?" in bot_response:
+    #     bot_response = "I'm currently specialized in financial reports and related topics. Could you please ask a financial-related question?"
 
     # Add the bot's response to the chat history
-    st.session_state.messages.append({"role": "bot", "content": bot_response})
+    st.session_state.messages.append({"role": "bot", "content": bot_response, "confidence": confidence_score})
 
     # Rerun the script to reflect the updated messages
     st.rerun()
