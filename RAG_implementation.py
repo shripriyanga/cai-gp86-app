@@ -15,6 +15,12 @@ from scipy.special import softmax
 from sentence_transformers import util
 import os
 
+embeding_model = None
+chroma_client = None
+collection = None
+model = None
+tokenizer = None
+generator = None
 
 # Function to extract text from PDF
 def extract_text(pdf_path):
@@ -78,10 +84,18 @@ def process_and_store_financial_reports(pdf_path, doc_id):
     all_chunks = text_chunks + [str(table) for table in structured_tables]
     embed_and_store(all_chunks, doc_id)
 
+def process_and_store():
+    # Process reports
+    doc_2023 = "2023_Financial_Report"
+    doc_2024 = "2024_Financial_Report"
+    process_and_store_financial_reports("2024-02-06-COGNIZANT-REPORTS-FOURTH-QUARTER-AND-FULL-YEAR-2023-RESULTS.pdf", doc_2023)
+    process_and_store_financial_reports("2025-02-05-Cognizant-Reports-Fourth-Quarter-and-Full-Year-2024-Results.pdf", doc_2024)
+
 # Function to retrieve relevant chunks
 def retrieve_similar_chunks(query, top_k=3):
     query_embedding = embedding_model.encode([query], convert_to_numpy=True)[0]
     results = collection.query(query_embeddings=[query_embedding.tolist()], n_results=top_k)
+    print(results)
     if min(results["distances"][0]) < 0.8:
       return results["metadatas"][0] if "metadatas" in results else []
     else:
@@ -106,49 +120,39 @@ def ask_local_llm(query, retrieved_chunks):
     response = generator(prompt, max_new_tokens=200)
     return response[0]["generated_text"].replace(prompt, "").strip()
 
-pdf_2023 = "2024-02-06-COGNIZANT-REPORTS-FOURTH-QUARTER-AND-FULL-YEAR-2023-RESULTS.pdf"
-pdf_2024 = "2025-02-05-Cognizant-Reports-Fourth-Quarter-and-Full-Year-2024-Results.pdf"
 
-# Process reports
-doc_2023 = "2023_Financial_Report"
-doc_2024 = "2024_Financial_Report"
 
-# Load embedding model
-embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+def prep():
+    global embedding_model, chroma_client, collection, model, tokenizer, generator
 
-# Initialize ChromaDB client and collection
-chroma_client = chromadb.PersistentClient(path="./chroma_db")
-collection = chroma_client.get_or_create_collection("financial_data")
+    
+    embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+    
+    
+    chroma_client = chromadb.PersistentClient(path="./chroma_db")
+    collection = chroma_client.get_or_create_collection("financial_data")
 
-# Log in to your Hugging Face account
-#login(token=os.getenv("HUGGING_FACE_TOKEN"))
-login(token='hf_KWGCDOKcYOUrYUUJZurryXKJrwxqqNgnNK')
 
-# Download and cache the model and tokenizer
-model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name)
+    login(token='hf_KWGCDOKcYOUrYUUJZurryXKJrwxqqNgnNK')
+    model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name)
+    generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
-# Create the pipeline
-generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
+# # Example Query
+# query_DB = "How much did Cognizant return to shareholders through share repurchases and dividends in 2023 and 2024?"
 
-process_and_store_financial_reports("2024-02-06-COGNIZANT-REPORTS-FOURTH-QUARTER-AND-FULL-YEAR-2023-RESULTS.pdf", doc_2023)
-process_and_store_financial_reports("2025-02-05-Cognizant-Reports-Fourth-Quarter-and-Full-Year-2024-Results.pdf", doc_2024)
+# retrieved_chunks_DB = retrieve_similar_chunks(query_DB)
+# print(retrieved_chunks_DB)
 
-# Example Query
-query_DB = "How much did Cognizant return to shareholders through share repurchases and dividends in 2023 and 2024?"
+# # Print retrieved results
+# print("Top Retrieved Chunks:")
+# for chunk in retrieved_chunks_DB:
+#   print(chunk["text"])
 
-retrieved_chunks_DB = retrieve_similar_chunks(query_DB)
-print(retrieved_chunks_DB)
-
-# Print retrieved results
-print("Top Retrieved Chunks:")
-for chunk in retrieved_chunks_DB:
-  print(chunk["text"])
-
-# Generate response using local LLM
-response = ask_local_llm(query_DB, retrieved_chunks_DB)
-print(response)
+# # Generate response using local LLM
+# response = ask_local_llm(query_DB, retrieved_chunks_DB)
+# print(response)
 
 
 
