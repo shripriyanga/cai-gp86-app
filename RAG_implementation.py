@@ -131,14 +131,14 @@ model = AutoModelForCausalLM.from_pretrained(model_name)
 # Create the pipeline
 generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
 
+process_and_store_financial_reports("2024-02-06-COGNIZANT-REPORTS-FOURTH-QUARTER-AND-FULL-YEAR-2023-RESULTS.pdf", doc_2023)
+process_and_store_financial_reports("2025-02-05-Cognizant-Reports-Fourth-Quarter-and-Full-Year-2024-Results.pdf", doc_2024)
+
 # Example Query
 query_DB = "How much did Cognizant return to shareholders through share repurchases and dividends in 2023 and 2024?"
 
 retrieved_chunks_DB = retrieve_similar_chunks(query_DB)
 print(retrieved_chunks_DB)
-
-process_and_store_financial_reports("2024-02-06-COGNIZANT-REPORTS-FOURTH-QUARTER-AND-FULL-YEAR-2023-RESULTS.pdf", doc_2023)
-process_and_store_financial_reports("2025-02-05-Cognizant-Reports-Fourth-Quarter-and-Full-Year-2024-Results.pdf", doc_2024)
 
 # Print retrieved results
 print("Top Retrieved Chunks:")
