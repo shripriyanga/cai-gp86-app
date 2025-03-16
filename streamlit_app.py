@@ -3,7 +3,7 @@ import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 import streamlit as st
-from RAG_implementation import retrieve_similar_chunks, ask_local_llm
+#from RAG_implementation import retrieve_similar_chunks, ask_local_llm
 
 def ask_local_llm(query, retrieved_chunks):
     context = "\n\n".join([chunk["text"] for chunk in retrieved_chunks])
@@ -30,14 +30,16 @@ for message in st.session_state.messages:
 # Create a text input for the user message
 user_input = st.chat_input("Type your message...")
 
-retrieved_chunks = retrieve_similar_chunks(user_input)
+#retrieved_chunks = retrieve_similar_chunks(user_input)
+
+
 # If user sends a message
 if user_input:
     # Add the user's message to the chat history
     st.session_state.messages.append({"role": "user", "content": user_input})
 
     # Hardcoded bot response
-    bot_response = ask_local_llm(user_input, retrieved_chunks)
+    bot_response = ask_local_llm(user_input, "abc")
 
     # Add the bot's response to the chat history
     st.session_state.messages.append({"role": "bot", "content": bot_response})
