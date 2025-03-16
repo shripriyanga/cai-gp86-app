@@ -3,7 +3,15 @@ import sys
 sys.modules["pysqlite3"] = sqlite3
 
 import streamlit as st
-#from RAG_implementation import retrieve_similar_chunks, ask_local_llm
+from RAG_implementation import prep,process_and_store,retrieve_similar_chunks,ask_local_llm
+
+# Initialize only once
+if "initialized" not in st.session_state:
+    st.session_state.initialized = True
+    # Process and store the financial reports
+    prep()
+    process_and_store()
+
 
 # Set the page title
 st.set_page_config(page_title="Financial RAG Chatbot Cognizant")
@@ -20,12 +28,14 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
+
+
 # Create a text input for the user message
 user_input = st.chat_input("Type your message...")
 
-#retrieved_chunks = retrieve_similar_chunks(user_input)
-retrieved_chunks = [{"text": "Cognizant's revenue grew by 5% in 2023."},
-                    {"text": "The company's AI investments increased significantly in 2024."}]
+
+#retrieved_chunks = [{"text": "Cognizant's revenue grew by 5% in 2023."},
+#                    {"text": "The company's AI investments increased significantly in 2024."}]
 
 
 
@@ -33,10 +43,10 @@ retrieved_chunks = [{"text": "Cognizant's revenue grew by 5% in 2023."},
 if user_input:
     # Add the user's message to the chat history
     st.session_state.messages.append({"role": "user", "content": user_input})
-
+    retrieved_chunks = retrieve_similar_chunks(user_input)
     # Hardcoded bot response
-    bot_response = "Harcoded checks"
-    #bot_response = ask_local_llm(user_input, retrieved_chunks)
+    #bot_response = "Harcoded checks"
+    bot_response = ask_local_llm(user_input, retrieved_chunks)
 
     # Add the bot's response to the chat history
     st.session_state.messages.append({"role": "bot", "content": bot_response})
