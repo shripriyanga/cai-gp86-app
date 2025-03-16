@@ -12,3 +12,4 @@ sentence-transformers
 pypdf
 pymupdf
 chromadb
+rank_bm25
